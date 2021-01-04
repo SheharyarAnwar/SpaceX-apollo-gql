@@ -9,11 +9,18 @@ const Index = () => {
   const { data, loading, error } = useLaunchQuery({
     variables: { id: flight_number },
   });
+  error && console.log(error.message);
   const modalProps = data && {
     details: data!.launch!.details,
     rocketName: data!.launch!.rocket!.rocket_name,
     articleLink: data!.launch!.links!.article_link,
     videoLink: data!.launch!.links!.video_link,
+  };
+  const errorProps = error && {
+    details: error?.message,
+    rocketName: "",
+    articleLink: "",
+    videoLink: "",
   };
   data && console.log(data);
   return (
@@ -21,7 +28,7 @@ const Index = () => {
       {loading ? (
         <CircularProgress style={{ margin: "auto" }} />
       ) : (
-        <Modal {...modalProps} />
+        <Modal {...modalProps} {...errorProps} />
       )}
     </>
   );
