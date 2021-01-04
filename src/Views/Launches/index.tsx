@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid } from "@material-ui/core";
+import { Box, CircularProgress, Grid, Typography } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { useLaunchesQuery } from "./../../generated/graphql";
 import Card from "../../Components/Card/index";
@@ -23,7 +23,9 @@ const Index: React.FC = () => {
 
   useEffect(() => {}, [data]);
 
-  const rendered =
+  const rendered = error ? (
+    <Typography variant="h2">{error?.message}</Typography>
+  ) : (
     data &&
     data!.launches!.map((val, i) => {
       return (
@@ -37,36 +39,44 @@ const Index: React.FC = () => {
           />
         </Link>
       );
-    });
+    })
+  );
+
   return (
     <>
       {loading ? (
         <CircularProgress style={{ margin: "auto" }} />
       ) : (
-        <div ref={ref} className={classes.root}>
+        <div
+          ref={ref}
+          style={{ margin: error ? "auto" : undefined }}
+          className={classes.root}
+        >
           <Grid
             container
             item
             justify="center"
             xs={12}
-            style={{ padding: "5%" }}
+            style={{ padding: error ? "0" : "5%" }}
           >
-            {rendered && [...rendered]}
+            {rendered && rendered}
           </Grid>
-          <Box display="flex" margin="5% 0" justifyContent="center">
-            <Box width="20%" display="flex" justifyContent="space-between">
-              <span
-                className={classes.arrowLeft}
-                onClick={() =>
-                  setOffset((prev) => (prev - 9 >= 0 ? prev - 9 : prev))
-                }
-              />
-              <span
-                className={classes.arrowRight}
-                onClick={() => setOffset((prev) => prev + 9)}
-              />
+          {!error && (
+            <Box display="flex" margin="5% 0" justifyContent="center">
+              <Box width="20%" display="flex" justifyContent="space-between">
+                <span
+                  className={classes.arrowLeft}
+                  onClick={() =>
+                    setOffset((prev) => (prev - 9 >= 0 ? prev - 9 : prev))
+                  }
+                />
+                <span
+                  className={classes.arrowRight}
+                  onClick={() => setOffset((prev) => prev + 9)}
+                />
+              </Box>
             </Box>
-          </Box>
+          )}
         </div>
       )}
     </>
